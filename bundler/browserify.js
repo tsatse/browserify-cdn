@@ -52,9 +52,7 @@ module.exports = function (env, options, cb) {
     }
 
     env.log.info('browserify: running browserify with options: `' + JSON.stringify(argv) + '`...');
-    var bfy = env.spawn('browserify', argv, {
-      cwd: path.join('node_modules', moduleFolder)
-    });
+    var bfy = env.spawn('browserify', argv);
 
     gatherOutputs('browserify', bfy, function (err, data) {
       if (err) {

@@ -37,6 +37,9 @@ module.exports = function (env, options, cb) {
   }
 
   function run() {
+    argv.push('-x');
+    argv.push('vertx');
+
     if (options.debug) {
       argv.push('--debug');
     }

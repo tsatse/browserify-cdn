@@ -1,19 +1,38 @@
 #!/usr/bin/env node
 
 var http = require('http');
+var program = require("commander")
 
 var minilog = require('minilog'),
-    log = minilog('browserify-cdn');
+  log = minilog('browserify-cdn');
+
+var defaultsGetter = require('../defaults');
+var defaults = defaultsGetter();
+var cdn = require('../');
+
 
 minilog
   .pipe(minilog.backends.console.formatNpm)
   .pipe(minilog.backends.console)
 ;
 
-var cdn = require('../'),
-    app = cdn.app;
+program
+  .version("0.4.0")
+  .option("-p, --port <number>", "Set the port on which to listen", parseInt)
+  .option("-c, --cache-dir <directory>", "Set the cache directory (default is " + defaults.db +")")
+  .parse(process.argv);
 
-var server = http.createServer(app).listen(process.env.PORT || process.argv[2] || 8080, function (err) {
+cdn.init(defaultsGetter({
+    db: program.cacheDir || defaults.db
+  })
+);
+var app = cdn.app;
+    
+
+console.log('program.cacheDir: ' + program.cacheDir);
+
+
+var server = http.createServer(app).listen(process.env.PORT || program.port || 8080, function (err) {
   if (err) throw err;
 
   var addr = server.address();

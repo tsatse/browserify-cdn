@@ -8,43 +8,48 @@ var bundler = require('./bundler'),
     requestLogger = require('./request-logger');
 
 var app = express(),
-    bundle = bundler(defaults());
+    bundle;
 
 var singular = require('./singular'),
     multiple = require('./multiple'),
     statuses = require('./statuses');
 
-//
-// Add static assets
-//
-app.use(requestLogger);
-app.use(app.routes);
-app.use(cors());
-app.use(express.static(__dirname + '/public'));
+function init(options) {
+    bundle = bundler(defaults(options));
+    //
+    // Add static assets
+    //
+    app.use(requestLogger);
+    app.use(app.routes);
+    app.use(cors());
+    app.use(express.static(__dirname + '/public'));
 
-//
-// Admin REST API
-//
-admin(app, bundle);
+    //
+    // Admin REST API
+    //
+    admin(app, bundle);
 
-//
-// Single-module bundles
-//
-singular(app, bundle);
+    //
+    // Single-module bundles
+    //
+    singular(app, bundle);
 
-//
-// Multiple-module bundles
-//
-multiple(app, bundle);
+    //
+    // Multiple-module bundles
+    //
+    multiple(app, bundle);
 
-//
-// Build statuses
-//
-statuses(app, bundle);
+    //
+    // Build statuses
+    //
+    statuses(app, bundle);
+}
 
 //
 // Exports
 //
+
+exports.init = init;
 exports.app = app;
 exports.bundler = bundler;
 exports.defaults = defaults;

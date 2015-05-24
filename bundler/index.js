@@ -208,7 +208,7 @@ module.exports = function bundler(opts) {
   _bundle.alias = alias;
   function alias(module, semver, callback) {
     npm.load({}, function() {
-      npmPrefix = npm.config.get('prefix');
+      var npmPrefix = npm.config.get('prefix');
       fs.exists(path.join(npmPrefix, 'lib/node_modules'), function(moduleIsLinked) {
         if(moduleIsLinked) {
           callback(null, true);
